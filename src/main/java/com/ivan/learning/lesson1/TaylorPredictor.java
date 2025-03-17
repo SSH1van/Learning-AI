@@ -1,4 +1,4 @@
-package com.ivan.learning;
+package com.ivan.learning.lesson1;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -72,15 +72,3 @@ public class TaylorPredictor {
         }
     }
 }
-
-
-
-
-
-
-// f(0,34) = 0,8506
-// f(-0,19) = 0,5932
-
-// f(2) = 1,5930
-// f(3) = 2,4178
-// f(-1) = 0,0181
