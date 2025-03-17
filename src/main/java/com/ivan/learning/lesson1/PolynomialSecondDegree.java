@@ -4,8 +4,13 @@ import java.util.Map;
 
 public class PolynomialSecondDegree {
     private static final Map<Float, Float> functionValues = Map.of(
-            -0.15f, 0.6151f, -0.10f, 0.6418f, -0.05f, 0.6678f,
-            0.00f, 0.6931f, 0.05f, 0.7178f, 0.10f, 0.7419f, 0.15f, 0.7654f);
+            -0.15f, 0.6151f,
+            -0.10f, 0.6418f,
+            -0.05f, 0.6678f,
+            0.00f, 0.6931f,
+            0.05f, 0.7178f,
+            0.10f, 0.7419f,
+            0.15f, 0.7654f);
 
     public static float[] leastSquaresQuadratic() {
         int n = functionValues.size();
