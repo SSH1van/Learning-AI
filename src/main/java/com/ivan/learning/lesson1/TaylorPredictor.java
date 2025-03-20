@@ -60,7 +60,7 @@ public class TaylorPredictor {
         System.out.println();
         scanner.close();
 
-        for (int i = 0; i < MAX_LEVEL; i++) {
+        for (int i = 1; i < MAX_LEVEL; i++) {
             try {
                 float y = computeTaylor(x, x0, i);
                 System.out.printf("Порядок разложения %d:%n", i);
