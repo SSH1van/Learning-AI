@@ -1,50 +1,59 @@
 package com.ivan.learning.lesson2;
 
-import java.util.*;
+import java.util.Random;
 
 public class Gradient {
-    private static final float d = 0.0005f;
-    private static float p = 1.0f;
+    private static final float STEP_SIZE = 0.0005f;
+    private static final float GRADIENT_THRESHOLD = 0.3f;
+    private static final int MAX_ITERATIONS = 100;
+    private static final int INITIAL_POINTS = 1000;
+    private static float learningRate = 1.0f;
 
     private static float func(float x, float y) {
         return (float) (Math.pow(0.4 * x, 4) + Math.pow(0.3 * y, 2) + 1.2 * Math.sin(x * y));
     }
 
-//    private static float func(float x, float y) {
-//        return (float) (Math.pow(0.4 * x, 4) + Math.pow(0.3 * y, 3) + 1.2 * Math.sin(x * y));
-//    }
+    private static float[] computeGradientStep(float currentX, float currentY) {
+        float gradientX = (func(currentX + STEP_SIZE, currentY) -
+                func(currentX - STEP_SIZE, currentY)) / (2 * STEP_SIZE);
+        float gradientY = (func(currentX, currentY + STEP_SIZE) -
+                func(currentX, currentY - STEP_SIZE)) / (2 * STEP_SIZE);
 
-    private static float[] diff(float x, float y) {
-        float xx = (func(x + d, y) - func(x - d, y)) / (2 * d);
-        float yy = (func(x, y + d) - func(x, y - d)) / (2 * d);
-
-        float q = (float) Math.sqrt(Math.pow(xx, 2) + Math.pow(yy, 2));
-        if (q < 0.3) {
-            p *= 0.5f;
+        float gradientMagnitude = (float) Math.sqrt(gradientX * gradientX + gradientY * gradientY);
+        if (gradientMagnitude < GRADIENT_THRESHOLD) {
+            learningRate *= 0.5f;
         }
-        return new float[] {x - (p * xx / q), y - (p * yy / q)};
+
+        float stepX = learningRate * gradientX / gradientMagnitude;
+        float stepY = learningRate * gradientY / gradientMagnitude;
+        return new float[] {currentX - stepX, currentY - stepY};
     }
 
     public static void main(String[] args) {
-        Random rand = new Random();
-        float x, y;
-        float minX = 0, minY = 0, minZ = Float.MAX_VALUE;
+        Random random = new Random();
+        float bestX = 0;
+        float bestY = 0;
+        float minValue = Float.MAX_VALUE;
 
-        for (int i = 0; i < 1000; i++) {
-            x = rand.nextFloat(-1, 1);
-            y = rand.nextFloat(-1, 1);
-            for (int j = 0; j < 100; j++) {
-                float[] result = diff(x, y);
-                x = result[0];
-                y = result[1];
+        for (int point = 0; point < INITIAL_POINTS; point++) {
+            float x = random.nextFloat(-1, 1);
+            float y = random.nextFloat(-1, 1);
+
+            for (int iteration = 0; iteration < MAX_ITERATIONS; iteration++) {
+                float[] nextPoint = computeGradientStep(x, y);
+                x = nextPoint[0];
+                y = nextPoint[1];
             }
-            if (func(x, y) < minZ) {
-                minX = x;
-                minY = y;
-                minZ = func(x, y);
+
+            float currentValue = func(x, y);
+            if (currentValue < minValue) {
+                bestX = x;
+                bestY = y;
+                minValue = currentValue;
             }
         }
-        System.out.println("Минимальное значение: ");
-        System.out.println(func(minX, minY) + " при x и y = " + minX + " " + minY);
+
+        System.out.printf("Минимальное значение: %.6f при x = %.6f, y = %.6f%n",
+                minValue, bestX, bestY);
     }
 }
