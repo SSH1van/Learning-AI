@@ -4,6 +4,7 @@ public class GradientHomework {
     private static final double STEP_SIZE = 0.3;
     private static final double POINT_INTERVAL = 1;
     private static final int MAX_ITERATIONS = 600;
+    private static final int MAX_FUNC_VALUE = 1000000;
 
     private static final int RANGE_X_MIN = 0;
     private static final int RANGE_X_MAX = 20;
@@ -14,24 +15,28 @@ public class GradientHomework {
         return (Math.pow(0.4f * x - 5.024f, 4) + Math.pow(0.3f * y + 1.884f, 2) + 0.6 * Math.sin(x * y));
     }
 
-    private static double[] computeGradientStep(double currentX, double currentY) {
+    private static void computeGradientStep(double currentX, double currentY, double[] result) {
         double gradientX = (func(currentX + STEP_SIZE, currentY) -
                 func(currentX - STEP_SIZE, currentY)) / (2 * STEP_SIZE);
         double gradientY = (func(currentX, currentY + STEP_SIZE) -
                 func(currentX, currentY - STEP_SIZE)) / (2 * STEP_SIZE);
-        return new double[] {currentX - gradientX, currentY - gradientY};
+        result[0] = currentX - gradientX;
+        result[1] = currentY - gradientY;
     }
 
     public static void main(String[] args) {
         double bestX = 0, bestY = 0;
+        double bestGradientX = 0, bestGradientY = 0;
         double bestInitialX = 0, bestInitialY = 0;
         double minValue = Double.MAX_VALUE;
+        double minGradientValue = Double.MAX_VALUE;
 
         long totalPoints = (long) ((long)((RANGE_X_MAX - RANGE_X_MIN) / POINT_INTERVAL) *
                                 ((RANGE_Y_MAX - RANGE_Y_MIN) / POINT_INTERVAL));
         long pointsProcessed = 0;
         double progressStep = totalPoints / 100.0;
         double nextProgressThreshold = progressStep;
+        double[] nextPoint = new double[2];
 
         System.out.printf("Общее количество точек: %d%n", totalPoints);
         System.out.printf("Интервалы точек для x: [%d; %d]%n", RANGE_X_MIN, RANGE_X_MAX);
@@ -46,11 +51,20 @@ public class GradientHomework {
                 double y = initialY;
 
                 for (int iteration = 0; iteration < MAX_ITERATIONS; iteration++) {
-                    double[] nextPoint = computeGradientStep(x, y);
+                    computeGradientStep(x, y, nextPoint);
                     x = nextPoint[0];
                     y = nextPoint[1];
+                    double currentGradientValue = func(x, y);
+                    if (currentGradientValue < minGradientValue) {
+                        minGradientValue = currentGradientValue;
+                        bestGradientX = x;
+                        bestGradientY = y;
+                    }
+                    if (currentGradientValue > MAX_FUNC_VALUE) break;
                 }
 
+                x = bestGradientX;
+                y = bestGradientY;
                 double currentValue = func(x, y);
 
                 if (currentValue < minValue) {
