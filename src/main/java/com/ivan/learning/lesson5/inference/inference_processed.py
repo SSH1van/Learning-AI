@@ -34,7 +34,7 @@ classes = ('Футболка', 'Штаны', 'Пуловер', 'Платье', '
 model = GarmentClassifier()
 
 # Загружаем сохранённые параметры
-load_path = os.path.join('models', 'improved_model.pth')
+load_path = os.path.join('models', 'base_model.pth')
 model.load_state_dict(torch.load(load_path))
 
 # Переключаем модель в режим оценки
