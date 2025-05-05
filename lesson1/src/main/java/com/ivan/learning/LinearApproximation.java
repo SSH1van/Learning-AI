@@ -1,4 +1,4 @@
-package com.ivan.learning.lesson1;
+package com.ivan.learning;
 
 import java.util.Map;
 
